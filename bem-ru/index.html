@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>БЭМ это просто!</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body>
+<p>Здравствуй, дорогой читатель. Сегодня хочу рассказать вам о БЭМ. БЭМ – это современная методология верстки, которая зародилась в компании «Яндекс».  </p>
+<h2>Основные понятия</h2>
+<p>БЭМ разделяется верстку на 3 основных сущности:</p>
+<ul>
+	<li>Блок</li>
+	<li>Элемент</li>
+	<li>Модификатор</li>
+</ul>
+<p><b>Блок</b> – это независимый компонент страницы, который свободно можно перемещать или копировать.</p>
+<p><b>Элемент</b> – это сущность, которая не может существовать без блока. </p>
+<p><b>Модификатор</b> -  это сущность, которая определяет внешний вид, состояние, поведение блока или элемента.</p>
+<p>Также, при использовании методологии существует термин микс. <b>Микс</b> - это использование блока и элемента на одном узле.</p>
+<h2>Соглашения по именованию</h2>
+<p>
+	Методология БЭМ не определяет четких границ для именования. Выбор стиля именования зависит полностью от личных предпочтений
+	разработчика и особенностей проекта. Но разработчики методологии предлагают следующую схему block-name__element-name_modifier-name.
+	Также важно заметить, что в документации показаны альтернативные схемы именования. Вы можете посмотреть их, пройдя по этой
+	<a href="https://ru.bem.info/method/naming-convention/#Альтернативные-схемы-именования">ссылке</a>
+</p>
+
+<h2>Практическое применение</h2>
+<p>
+	Хорошо, мы разобрались с терминами, но как же применить БЭМ на практике? Давайте разбираться.
+	Для этого я создал простую <a href="http://stas-melnikov.ru/articles/bem/demo/no_bem/">демо-страницу</a> и проведу ее рефакторинг согласно методологии БЭМ с использованием стандартных
+	принципов именования селекторов. При выполнении задачи я буду придерживаться следующих правил:
+	<ul>
+		<li>Использование классов в качестве css-селекторов. Нельзя использовать индификаторы и селекторы тегов</li>
+		<li>Создание переиспользуемых блоков</li>
+		<li>Минимум дублирования CSS свойств</li>
+	</ul>
+</p>
+<h3>Шапка сайта</h3>
+<p>Шапка сайта состоит из двух элементов - это логотип и меню сайта. Текущая реализация выглядит так:</p>
+		<p>HTML:</p>
+		<pre class="code language-html">
+			<code>
+&lt;header&gt;
+ &lt;div class="container"&gt;
+  &lt;h1 class="logo"&gt;Responsive UX &lt;span class="logo__item"&gt;template&lt;/span&gt;&lt;/h1&gt;
+  &lt;nav class="menu"&gt;	
+   &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;   
+    &lt;li&gt;&lt;a href="#"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+   &lt;/ul&gt;
+  &lt;/nav&gt;	
+ &lt;/div&gt;
+&lt;/header&gt;
+			</code>
+		</pre>
+		<p>CSS:</p>
+		<pre class="code language-css">
+			<code>
+header {
+  min-width: 100%;
+  height: 90px;
+  padding: 15px 0;
+  box-sizing: border-box;
+  position: relative;
+  background-color: #ffffff;
+  border-bottom: 5px solid #fad027;;
+}
+header:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+header ul{
+  margin-top: 15px;
+}
+.logo {
+  float: left;
+  font-size: 30px;
+  font-weight: 400;
+  color: #000000;
+}
+.logo span {
+  font-size: 16px;
+  color: #0091be;
+  display: block;
+}
+.menu {
+  float: right;
+}
+.menu ul {
+  position: relative;
+}
+.menu li {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 10px;
+}
+.menu li:last-of-type {
+  margin-right: 0;
+}
+.menu a {
+  color: #000000;
+}
+.menu a:hover {
+  text-decoration: underline;
+}
+			</code>
+		</pre>
+<p>Теперь я изменю код согласно правилам БЭМ. Я создам два блока - логотип и меню.</p>
+<h3>Логотип</h3>
+<p>HTML:</p>
+<pre class="code language-html">
+	<code>
+ &lt;h1 class="logo"&gt;Responsive UX &lt;span class="logo__item"&gt;template&lt;/span&gt;&lt;/h1&gt;
+	</code>
+</pre>	
+<p>CSS:</p>
+<pre class="code language-css">
+	<code>
+.logo {
+  float: left;
+  font-size: 30px;
+  font-weight: 400;
+  color: #000000;
+}
+.logo__item {
+  font-size: 16px;
+  color: #0091be;
+  display: block;
+}
+	</code>
+</pre>			
+<p>
+	Логотип имеет одну вложенную надпись "template". Данная сущность будет являтся элементом, потому что 
+	если мы отделим ее от блока, то она потеряет свой смысл. Поэтому я добавил ей класс logo__label. 
+</p>
+<h3>Меню</h3>
+<p>HTML:</p>
+<pre class="code language-html">
+	<code>
+&lt;nav id="menu" class="menu"&gt;	
+ &lt;ul class="menu-list header__menu-list"&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;About&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+ &lt;/ul&gt;
+&lt;/nav&gt;
+	</code>
+</pre>	
+<p>CSS:</p>
+<pre class="code language-css">
+	<code>
+.menu {
+  float: right;
+}
+.menu-list {
+  position: relative;
+}
+.header__menu-list{
+   margin-top: 1.5rem;
+}
+.menu-list__item {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 1rem;
+}
+.menu-list__item:last-of-type {
+  margin-right: 0;
+}
+.menu-list__link {
+  color: #000000;
+  text-decoration: underline;
+}
+	</code>
+</pre>	
+<p>
+	Для реализации меню нам мало создать блок, т.к. нам требуется задать расположение блока и вверхний отступ. 
+	Если указать эти свойства в классе блока, то при его переиспользовании свойства могут стать лишними. 
+	Для решения этой задачи я буду использовать микс - menu-list и header__menu-list. Такой способ помогает выделить независимый блок menu-list, а также добавить нужные css-свойства. 
+</p>
+<h3>Главная новость</h3>
+<p>HTML:</p>
+<pre class="code language-html">
+	<code>
+&lt;article class="article article_main"&gt;
+ &lt;h2 class="title"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sagittis imperdiet condimentum.&lt;/h2&gt;
+ &lt;img src="http://stas-melnikov.ru/cliparts/notebook3_1200x800.jpg" alt="project" /&gt; 
+ &lt;div class="date"&gt;
+  &lt;div class="day"&gt;15&lt;/div&gt;
+  &lt;div class="month"&gt;May&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="content"&gt;
+  ...
+ &lt;/div&gt;
+ &lt;div class="footer"&gt;
+  &lt;div class="tags"&gt;
+   &lt;span class="label"&gt;&lt;i class="icon icon-tag"&gt;&lt;/i&gt;Tags:&lt;/span&gt;
+   &lt;span class="tag"&gt;Open-Source&lt;/span&gt;
+   &lt;span class="tag"&gt;Jquery&lt;/span&gt;
+   &lt;span class="tag"&gt;Animation&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="author"&gt;
+   &lt;span class="label"&gt;&lt;i class="icon icon-user"&gt;&lt;/i&gt;Stas Melnikov&lt;/span&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/article&gt;
+	</code>
+</pre>
+	<p>CSS:</p>
+	<pre class="code language-css">
+		<code>
+.article:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.article .content {
+  float: right;
+  width: 85%;
+  padding: 0;
+}
+.article .footer {
+  float: right;
+  width: 100%;
+}
+.article .author {
+  float: right;
+}
+.article .title {
+  margin-bottom: 25px;
+}
+.article .icon {
+  margin-right: 5px;
+}
+.article img {
+  margin-bottom: 25px;
+  max-width: 100%;
+  height: auto;
+}
+.article .tags {
+  float: right;
+  margin-left: 10px;
+}
+.article .tag {
+  padding: 2px 10px;
+  background-color: #0091be;
+  margin-bottom: 15px;
+  display: inline-block;
+  vertical-align: top;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article .date {
+  float: left;
+  width: 10%;
+  text-align: center;
+}
+.article .day {
+  background-color: #eeeeee;
+  padding: 15px 5px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article .month {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #0091be;
+  padding: 5px;
+  text-align: center;
+}
+.article .label {
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+	</code>
+</pre>	
+<p>
+	При анализе кода можно выделить блок article. Внутри него находятся такие элементы как заголовок, изображение, дата, контент новости,
+	автор, теги новости. Также, при рефакторинге я изменю div с классом footer на более подходящий по смыслу 
+	тег footer. В результате получится следующее: 
+<p>
+<pre class="code language-html">
+	<code>
+&lt;article class="article"&gt;
+ &lt;h2 class="title article__title"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sagittis imperdiet condimentum.&lt;/h2&gt;
+ &lt;img class="article__img" src="http://stas-melnikov.ru/cliparts/notebook3_1200x800.jpg" alt="project" /&gt; 
+ &lt;div class="article__date"&gt;
+  &lt;div class="article__day"&gt;15&lt;/div&gt;
+  &lt;div class="article__month"&gt;May&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="article__content"&gt;
+  ...
+ &lt;/div&gt;
+ &lt;footer class="article__footer"&gt;
+  &lt;div class="article__tags"&gt;
+   &lt;span class="article__label"&gt;&lt;i class="article__icon icon icon-tag"&gt;&lt;/i&gt;Tags:&lt;/span&gt;
+   &lt;span class="article__tag"&gt;Open-Source&lt;/span&gt;
+   &lt;span class="article__tag"&gt;Jquery&lt;/span&gt;
+   &lt;span class="article__tag"&gt;Animation&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="article__author"&gt;
+   &lt;span class="article__label"&gt;&lt;i class="article__icon icon icon-user"&gt;&lt;/i&gt;Stas Melnikov&lt;/span&gt;
+  &lt;/div&gt;
+ &lt;/footer&gt;
+&lt;/article&gt;	
+	</code>
+</pre>
+<pre class="code language-css">
+	<code>
+.article:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.article__content {
+  float: right;
+  width: 85%;
+}
+.article__footer {
+  float: right;
+  width: 100%;
+}
+.article__author {
+  float: right;
+}
+.article__title {
+  margin-bottom: 25px;
+}
+.article__icon {
+  margin-right: 5px;
+}
+.article__img {
+  margin-bottom: 25px;
+  max-width: 100%;
+  height: auto;
+}
+.article__tags {
+  float: right;
+  margin-left: 10px;
+}
+.article__tag {
+  padding: 2px 10px;
+  background-color: #0091be;
+  margin-bottom: 15px;
+  display: inline-block;
+  vertical-align: top;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article__date {
+  float: left;
+  width: 10%;
+  text-align: center;
+}
+.article__day {
+  background-color: #eeeeee;
+  padding: 15px 5px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article__month {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #0091be;
+  padding: 5px;
+  text-align: center;
+}
+.article__label {
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+	</code>
+</pre>	
+<h3>Подвал сайта</h3>
+<pre class="code language-html">
+	<code>	
+&lt;footer class="footer_page"&gt;
+ &lt;div class="container"&gt;
+  &lt;ul&gt;
+   &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;&lt;a href="#"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;&lt;a href="#"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;&lt;a href="#"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;a href="http://stas-melnikov.ru" class="copyright" target="blank"&gt;Developed by Stas Melnikov&lt;/a&gt;
+ &lt;/div&gt;	
+&lt;/footer&gt;	
+	</code>
+</pre>	
+<p>CSS:</p>
+	<pre class="code language-css">
+		<code>
+.footer_page {
+  min-width: 100px;
+  padding: 30px 15px;
+  background-color: #3c3838;
+  font-size: 15px;
+  color: #fefefe;
+}
+.footer_page:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.copyright {
+  float: right;
+  text-align: right;
+}
+.footer_page ul {
+  float: left;
+}
+.footer_page li {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 1rem;
+}
+.footer_page a {
+  color: #ffffff;
+}
+.footer_page a:hover {
+  text-decoration: underline;
+}
+
+	</code>
+</pre>	
+<p>
+	Для рефакторинга фрагмента я буду использовать уже ранее созданные блок menu-list. Но у нас есть сложность в том что цвет ссылок 
+	черный, а по дизайну в подвале все ссылки белые. Для решения этой задачи создадим footer__link, который будет являтся элементом
+	блока footer. Также, для списка добавлю класс footer__menu-list, с помощью которого расположу меню слева.
+</p>
+<pre class="code language-html">
+	<code>	
+&lt;footer class="footer"&gt;
+ &lt;div class="container"&gt;
+  &lt;ul class="menu-list footer__menu-list"&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#about" class="menu__link menu__link_white scroll_js"&gt;About&lt;/a&gt;&lt;/li&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#projects" class="menu__link menu__link_white scroll_js"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#blog" class="menu__link menu__link_white scroll_js"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#contacts" class="menu__link menu__link_white scroll_js"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="footer__copyright"&gt;
+   &lt;a href="http://stas-melnikov.ru" class="footer__link" target="blank"&gt;Developed by Stas Melnikov&lt;/a&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;	
+&lt;/footer&gt;	
+	</code>
+</pre>
+<p>CSS:</p>
+<pre class="code language-css">
+	<code>
+.footer {
+  min-width: 100px;
+  padding: 30px 15px;
+  background-color: #3c3838;
+  font-size: 15px;
+  color: #fefefe;
+}
+.footer:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.footer__copyright {
+  float: right;
+  text-align: right;
+}
+.footer__footer__menu-list {
+  float: left;
+}
+.footer__link {
+  color: #ffffff;
+}
+.footer__link:hover {
+  text-decoration: underline;
+}
+	</code>
+</pre>	
+<h2>Подведем итог</h2>
+<p>
+	После приведения рефакторинга мы наглядно убедились, что БЭМ помогает создавать переиспользуемые компоненты, которые помогают избегать дублирования кода. 
+	Также, верстка становится более гибкой из-за отсутствия лишних каскадных зависимостей.
+</p>
+<h2>Реальное испальзование</h2>
+<p>
+	Мы ознакомились с теорией и немного потренировались на небольшом примере, но это не то что по-настоящему интересует нас. 
+	Где же БЭМ используется по-настоящему? В каких компаниях он популярен кроме Яндекса? Я исследовал несколько проектов от компании Мейл.ру
+	и хочу поделится с вами результатами.
+</p>
+<h3>Проекты "Авто@mail.ru" и "Леди@mail.ru"</h3>
+<p>
+	Зайдя на эти проекты я сделал несколько скриншотов вверхней части страниц. Они выглядели следующим образом. 
+</p>
+<img src="images/1.jpg" width="100%" alt=""/>
+<img src="images/2.jpg" width="100%" alt=""/>
+<p>
+	Если вы сравните код при помощи Web Inspector, то вы увидете что разработчики используют одинаковые блоки.  
+</p>
+<p>
+	У "Авто@mail.ru"
+</p>
+<img src="images/3.jpg" width="100%" alt=""/>
+<p>
+	У "Леди@mail.ru"
+</p>
+<img src="images/4.jpg" width="100%" alt=""/>
+
+<p>
+	Мы видим что, разработчики создали общую библиотеку элементов и используют ее на разных проектах.
+	Единственно что отличает их реализацию от классической реализации БЭМ - это свой стиль именования.
+</p>
+<h2>Заключение</h2>
+<p>
+	В этой статье я хотел показать вам, что БЭМ - это простая и полезная технология. Код примеров из статьи я выложил на <a href="https://github.com/melnik909/my_articles/tree/master/bem">Github</a>.  
+	Я очень надеюсь, что вы попробуйте ее в своих проектах. 
+
+</p>
+</body>
+</html>

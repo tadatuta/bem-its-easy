@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>BEM - it's easy!</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="stylesheet" href="css/style.css" type="text/css"/>
+</head>
+<body>
+<p>Hello, dear reader. Today I want to tell you aobut BEM. It's modern methodology, which was born in Yandex company. </p>
+<h2>Main concepts</h2>
+<p>BEM devides layout in 3 main units:</p>
+<ul>
+	<li>Block</li>
+	<li>Element</li>
+	<li>Modifier</li>
+</ul>
+<p><b>Block</b> – it's independent page component, which you can easily move or copy.</p>
+<p><b>Element</b> – it's unit, which can't exist without block. </p>
+<p><b>Modifier</b> -  it's unit, which specify external appearance, condition, behavior of block or element.</p>
+<p>Also, there is term named 'mix'. <b>Mix</b> - it's using block or element in one spot.</p>
+<h2>Standartization of names.</h2>
+<p>
+	Methodology of BEM is not defines exact rules for naming. Choice of style for naming depends only from personal preferences and specificity of project.
+	But developers offer next scheme  - block-name__element-name_modifier-name.
+	Also, it's important, that in documentation showed alternative naming schemes. You can see them
+	<a href="https://en.bem.info/method/naming-convention/#alternative-naming-schemes">here</a>
+</p>
+
+<h2>How it can be used in practice?</h2>
+<p>
+	Ok, now let's figure out how we can use BEM in practise.
+	I made simple <a href="http://stas-melnikov.ru/articles/bem/demo/no_bem/">demo-page</a> and now I'll do refactoring by BEM method with using standart principles of naming. 
+	I'll stick these rules, during realization this task:
+	<ul>
+		<li>Use classes as css-selectors. You can't use identificators and selectors of tags.</li>
+		<li>Creating of reusable blocks</li> 																                                            
+		<li>Minimum of duplication CSS attributes</li>
+	</ul>
+</p>
+<h3>Site header</h3>
+<p>Site header consist of two elements - logo and menu. Now it looks like this:</p>
+		<p>HTML:</p>
+		<pre class="code language-html">
+			<code>
+&lt;header&gt;
+ &lt;div class="container"&gt;
+  &lt;h1 class="logo"&gt;Responsive UX &lt;span class="logo__item"&gt;template&lt;/span&gt;&lt;/h1&gt;
+  &lt;nav class="menu"&gt;	
+   &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;   
+    &lt;li&gt;&lt;a href="#"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+   &lt;/ul&gt;
+  &lt;/nav&gt;	
+ &lt;/div&gt;
+&lt;/header&gt;
+			</code>
+		</pre>
+		<p>CSS:</p>
+		<pre class="code language-css">
+			<code>
+header {
+  min-width: 100%;
+  height: 90px;
+  padding: 15px 0;
+  box-sizing: border-box;
+  position: relative;
+  background-color: #ffffff;
+  border-bottom: 5px solid #fad027;;
+}
+header:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+header ul{
+  margin-top: 15px;
+}
+.logo {
+  float: left;
+  font-size: 30px;
+  font-weight: 400;
+  color: #000000;
+}
+.logo span {
+  font-size: 16px;
+  color: #0091be;
+  display: block;
+}
+.menu {
+  float: right;
+}
+.menu ul {
+  position: relative;
+}
+.menu li {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 10px;
+}
+.menu li:last-of-type {
+  margin-right: 0;
+}
+.menu a {
+  color: #000000;
+}
+.menu a:hover {
+  text-decoration: underline;
+}
+			</code>
+		</pre>
+<p>Now I'll change code according to BEM rules. Let's create two blocks - logo and menu..</p>
+<h3>Logo</h3>
+<p>HTML:</p>
+<pre class="code language-html">
+	<code>
+ &lt;h1 class="logo"&gt;Responsive UX &lt;span class="logo__item"&gt;template&lt;/span&gt;&lt;/h1&gt;
+	</code>
+</pre>	
+<p>CSS:</p>
+<pre class="code language-css">
+	<code>
+.logo {
+  float: left;
+  font-size: 30px;
+  font-weight: 400;
+  color: #000000;
+}
+.logo__item {
+  font-size: 16px;
+  color: #0091be;
+  display: block;
+}
+	</code>
+</pre>			
+<p>
+	Logo have one nested sign - "template". This unit is element, because, if we separate it from block, it will lost any sense. 
+	For this reason, I added class "logo__label" to it.
+</p>
+<h3>Menu</h3>
+<p>HTML:</p>
+<pre class="code language-html">
+	<code>
+&lt;nav id="menu" class="menu"&gt;	
+ &lt;ul class="menu-list header__menu-list"&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;About&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+  &lt;li class="menu-list__item"&gt;&lt;a href="#" class="menu-list__link"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+ &lt;/ul&gt;
+&lt;/nav&gt;
+	</code>
+</pre>	
+<p>CSS:</p>
+<pre class="code language-css">
+	<code>
+.menu {
+  float: right;
+}
+.menu-list {
+  position: relative;
+}
+.header__menu-list{
+   margin-top: 1.5rem;
+}
+.menu-list__item {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 1rem;
+}
+.menu-list__item:last-of-type {
+  margin-right: 0;
+}
+.menu-list__link {
+  color: #000000;
+  text-decoration: underline;
+}
+	</code>
+</pre>	
+<p>
+	I made a block, but it's not enough for realization of menu, because we need to set location of block and upper indent.
+	Setting this attribute in class of this block is not so good, because of reusing this can make attributes excessive.
+	I'll solve this problem by using mix - menu-list and header__menu-list. This method helps to highlight independent block menu-list, and to add needed css-attributes.
+</p>
+<h3>Main news</h3>
+<p>HTML:</p>
+<pre class="code language-html">
+	<code>
+&lt;article class="article article_main"&gt;
+ &lt;h2 class="title"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sagittis imperdiet condimentum.&lt;/h2&gt;
+ &lt;img src="http://stas-melnikov.ru/cliparts/notebook3_1200x800.jpg" alt="project" /&gt; 
+ &lt;div class="date"&gt;
+  &lt;div class="day"&gt;15&lt;/div&gt;
+  &lt;div class="month"&gt;May&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="content"&gt;
+  ...
+ &lt;/div&gt;
+ &lt;div class="footer"&gt;
+  &lt;div class="tags"&gt;
+   &lt;span class="label"&gt;&lt;i class="icon icon-tag"&gt;&lt;/i&gt;Tags:&lt;/span&gt;
+   &lt;span class="tag"&gt;Open-Source&lt;/span&gt;
+   &lt;span class="tag"&gt;Jquery&lt;/span&gt;
+   &lt;span class="tag"&gt;Animation&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="author"&gt;
+   &lt;span class="label"&gt;&lt;i class="icon icon-user"&gt;&lt;/i&gt;Stas Melnikov&lt;/span&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/article&gt;
+	</code>
+</pre>
+	<p>CSS:</p>
+	<pre class="code language-css">
+		<code>
+.article:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.article .content {
+  float: right;
+  width: 85%;
+  padding: 0;
+}
+.article .footer {
+  float: right;
+  width: 100%;
+}
+.article .author {
+  float: right;
+}
+.article .title {
+  margin-bottom: 25px;
+}
+.article .icon {
+  margin-right: 5px;
+}
+.article img {
+  margin-bottom: 25px;
+  max-width: 100%;
+  height: auto;
+}
+.article .tags {
+  float: right;
+  margin-left: 10px;
+}
+.article .tag {
+  padding: 2px 10px;
+  background-color: #0091be;
+  margin-bottom: 15px;
+  display: inline-block;
+  vertical-align: top;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article .date {
+  float: left;
+  width: 10%;
+  text-align: center;
+}
+.article .day {
+  background-color: #eeeeee;
+  padding: 15px 5px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article .month {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #0091be;
+  padding: 5px;
+  text-align: center;
+}
+.article .label {
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+	</code>
+</pre>	
+<p>
+	Code analysis can highlight a block 'article'. Inside there are elements like title, image, date, news content, author, news tags. 
+	Also, in process of refactoring I'll replace div(with class 'footer') by tag 'footer', because his meaning is more relevant. In result, we'll get: 
+<p>
+<pre class="code language-html">
+	<code>
+&lt;article class="article"&gt;
+ &lt;h2 class="title article__title"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sagittis imperdiet condimentum.&lt;/h2&gt;
+ &lt;img class="article__img" src="http://stas-melnikov.ru/cliparts/notebook3_1200x800.jpg" alt="project" /&gt; 
+ &lt;div class="article__date"&gt;
+  &lt;div class="article__day"&gt;15&lt;/div&gt;
+  &lt;div class="article__month"&gt;May&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="article__content"&gt;
+  ...
+ &lt;/div&gt;
+ &lt;footer class="article__footer"&gt;
+  &lt;div class="article__tags"&gt;
+   &lt;span class="article__label"&gt;&lt;i class="article__icon icon icon-tag"&gt;&lt;/i&gt;Tags:&lt;/span&gt;
+   &lt;span class="article__tag"&gt;Open-Source&lt;/span&gt;
+   &lt;span class="article__tag"&gt;Jquery&lt;/span&gt;
+   &lt;span class="article__tag"&gt;Animation&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="article__author"&gt;
+   &lt;span class="article__label"&gt;&lt;i class="article__icon icon icon-user"&gt;&lt;/i&gt;Stas Melnikov&lt;/span&gt;
+  &lt;/div&gt;
+ &lt;/footer&gt;
+&lt;/article&gt;	
+	</code>
+</pre>
+<pre class="code language-css">
+	<code>
+.article:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.article__content {
+  float: right;
+  width: 85%;
+}
+.article__footer {
+  float: right;
+  width: 100%;
+}
+.article__author {
+  float: right;
+}
+.article__title {
+  margin-bottom: 25px;
+}
+.article__icon {
+  margin-right: 5px;
+}
+.article__img {
+  margin-bottom: 25px;
+  max-width: 100%;
+  height: auto;
+}
+.article__tags {
+  float: right;
+  margin-left: 10px;
+}
+.article__tag {
+  padding: 2px 10px;
+  background-color: #0091be;
+  margin-bottom: 15px;
+  display: inline-block;
+  vertical-align: top;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article__date {
+  float: left;
+  width: 10%;
+  text-align: center;
+}
+.article__day {
+  background-color: #eeeeee;
+  padding: 15px 5px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+.article__month {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #0091be;
+  padding: 5px;
+  text-align: center;
+}
+.article__label {
+  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+	</code>
+</pre>	
+<h3>Site footer</h3>
+<pre class="code language-html">
+	<code>	
+&lt;footer class="footer_page"&gt;
+ &lt;div class="container"&gt;
+  &lt;ul&gt;
+   &lt;li&gt;&lt;a href="#"&gt;About&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;&lt;a href="#"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;&lt;a href="#"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+   &lt;li&gt;&lt;a href="#"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;a href="http://stas-melnikov.ru" class="copyright" target="blank"&gt;Developed by Stas Melnikov&lt;/a&gt;
+ &lt;/div&gt;	
+&lt;/footer&gt;	
+	</code>
+</pre>	
+<p>CSS:</p>
+	<pre class="code language-css">
+		<code>
+.footer_page {
+  min-width: 100px;
+  padding: 30px 15px;
+  background-color: #3c3838;
+  font-size: 15px;
+  color: #fefefe;
+}
+.footer_page:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.copyright {
+  float: right;
+  text-align: right;
+}
+.footer_page ul {
+  float: left;
+}
+.footer_page li {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 1rem;
+}
+.footer_page a {
+  color: #ffffff;
+}
+.footer_page a:hover {
+  text-decoration: underline;
+}
+
+	</code>
+</pre>	
+<p>
+	I'll use already created block 'menu-list' for refactoring of this. Now we have a problem. Color of the links is black, but our design assumes white links in footer.
+	My decision is creating 'footer__link', which will be element of block 'footer'.
+	Also, add class 'footer__menu-list'. It'll help to position menu on left side.
+</p>
+<pre class="code language-html">
+	<code>	
+&lt;footer class="footer"&gt;
+ &lt;div class="container"&gt;
+  &lt;ul class="menu-list footer__menu-list"&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#about" class="menu__link menu__link_white scroll_js"&gt;About&lt;/a&gt;&lt;/li&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#projects" class="menu__link menu__link_white scroll_js"&gt;Projects&lt;/a&gt;&lt;/li&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#blog" class="menu__link menu__link_white scroll_js"&gt;Blog&lt;/a&gt;&lt;/li&gt;
+   &lt;li class="menu-list__item"&gt;&lt;a href="#contacts" class="menu__link menu__link_white scroll_js"&gt;Contacts&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="footer__copyright"&gt;
+   &lt;a href="http://stas-melnikov.ru" class="footer__link" target="blank"&gt;Developed by Stas Melnikov&lt;/a&gt;
+  &lt;/div&gt;
+ &lt;/div&gt;	
+&lt;/footer&gt;	
+	</code>
+</pre>
+<p>CSS:</p>
+<pre class="code language-css">
+	<code>
+.footer {
+  min-width: 100px;
+  padding: 30px 15px;
+  background-color: #3c3838;
+  font-size: 15px;
+  color: #fefefe;
+}
+.footer:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.footer__copyright {
+  float: right;
+  text-align: right;
+}
+.footer__footer__menu-list {
+  float: left;
+}
+.footer__link {
+  color: #ffffff;
+}
+.footer__link:hover {
+  text-decoration: underline;
+}
+	</code>
+</pre>	
+<h2>Summary.</h2>
+<p>
+	After refactoring, we have seen clearly, that BEM helps to create reusable components. which makes our code without unnecessary duplication.
+	Also, layout becomes more flexible, because of missing of extra cascading dependencies.
+</p>
+<h2>Real usage.</h2>
+<p>
+	We have learned a new theory and practiced on a small example, but that's not what really interests us.
+	Where is real usage of BEM? In which companies it's popular, except Yandex? I have researched a couple of projects from Mail.ru company and want to tell you about results.
+</p>
+<h3>Projects "Авто@mail.ru" and "Леди@mail.ru"</h3>
+<p>
+	I went to these projects and made several screenshots of the header part of page. They look like this: 
+</p>
+<img src="images/1.jpg" width="100%" alt=""/>
+<img src="images/2.jpg" width="100%" alt=""/>
+<p>
+	If you compare code by Web Inspector, you'll see, that developers used same blocks.
+</p>
+<p>
+	"Авто@mail.ru"
+</p>
+<img src="images/3.jpg" width="100%" alt=""/>
+<p>
+	"Леди@mail.ru"
+</p>
+<img src="images/4.jpg" width="100%" alt=""/>
+
+<p>
+	We see, that developers have created common library of elements and use it at different projects.
+	There is only one difference from classic BEM realization - his own style of naming.
+</p>
+<h2>Сonclusion</h2>
+<p>
+	In this review I wanted to show you, that BEM - is easy and useful technology. All code from this review I posted on <a href="https://github.com/melnik909/my_articles/tree/master/bem">Github</a>.  
+	I hope you'll try all of this in your own projects.
+</p>
+</body>
+</html>
